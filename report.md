@@ -10,13 +10,16 @@ code: 3
 
 ### Size
 **total cells: 17**
+## Kernel Checks: 
+
+Programming language is **R (4.1.1)**
+
 
 ### Citations Not Found
 
 
 ### Check Output Sizes and Rules
-  - No valid tags found for image output in cell 7
-
+  - No valid tags found for image output  [Check here ](https://journalofdigitalhistory.org/en/notebook-viewer/JTJGcHJveHktZ2l0aHVidXNlcmNvbnRlbnQlMkZDMkRIJTJGdGVtcGxhdGVfcmVwb19KREhfUiUyRm1hc3RlciUyRmF1dGhvcl9ndWlkZWxpbmVfdGVtcGxhdGUuaXB5bmI=?idx=7)
 Total output size: 1.82 KB
 Total number of images: 1
 Total number of tables: 0
@@ -26,6 +29,9 @@ Total number of tables: 0
 
 ### Check JavaScript
 No JavaScript code found in output cells.
+### Check JavaScript (plotly)
+> [!CAUTION]
+> Error: **requirements.txt** is missing
 
 
 ### Check Tags
