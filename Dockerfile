@@ -1,9 +1,10 @@
 ## Use a tag instead of "latest" for reproducibility
 FROM rocker/binder:3.6.3
 
-## Declares build arguments
-ARG NB_USER
-ARG NB_UID
+## Declares build arguments with default values (if needed)
+ARG NB_USER=rocker
+ARG NB_UID=1000
+ENV HOME=/home/${NB_USER}
 
 ## Copies your repo files into the Docker Container
 USER root
@@ -21,3 +22,4 @@ USER ${NB_USER}
 
 ## Run an install.R script, if it exists.
 RUN if [ -f install.R ]; then R --quiet -f install.R; fi
+[ -f install.R ]; then R --quiet -f install.R; fi
