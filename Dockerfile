@@ -14,8 +14,8 @@ RUN apt-get update && \
         libzmq5 \
         python3 \
         python3-pip && \
-    # Install Jupyter using pip so that IRkernel::installspec() finds jupyter-client.
-    pip3 install jupyter && \
+    # Install Jupyter using pip with the --break-system-packages flag.
+    pip3 install --break-system-packages jupyter && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy your repository into the container's home directory
