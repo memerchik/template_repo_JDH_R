@@ -19,4 +19,5 @@ RUN if [ -f ${HOME}/install.R ]; then \
     fi
 
 # Default command to launch an interactive R session
-CMD ["R"]
+# CMD ["R"]
+CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--NotebookApp.token=''", "--NotebookApp.password=''"]
