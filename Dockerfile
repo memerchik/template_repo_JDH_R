@@ -6,7 +6,7 @@ ARG NB_USER=jovyan
 ARG NB_UID=1000
 ENV HOME=/home/${NB_USER}
 
-# Define a user-level R library path and also set R_LIBS
+# Define a user-level R library path and also set R_LIBS so R uses it by default
 ENV R_LIBS_USER=${HOME}/R/x86_64-pc-linux-gnu-library/4.4.3
 ENV R_LIBS=${R_LIBS_USER}
 
@@ -37,10 +37,10 @@ RUN chown -R ${NB_USER} ${HOME}
 # Switch to the non-root user for the remaining steps
 USER ${NB_USER}
 
-# Instead of invoking install.R with -f, run an expression that
-# resets .libPaths() to use the user-level library and then sources install.R.
+# Run the install.R script after resetting R's library paths.
+# This command uses file.path() and Sys.getenv() to locate install.R.
 RUN if [ -f ${HOME}/install.R ]; then \
-        R --quiet -e '.libPaths(Sys.getenv("R_LIBS_USER")); source("${HOME}/install.R")'; \
+      R --quiet -e ".libPaths(Sys.getenv('R_LIBS_USER')); source(file.path(Sys.getenv('HOME'),'install.R'))"; \
     fi
 
 # Default command: launch an interactive R session.
