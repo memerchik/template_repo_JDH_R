@@ -1,39 +1,24 @@
-# Use the official R 4.4.3 image as the base image
-FROM rocker/r-ver:4.4.3
+# syntax=docker/dockerfile:1
+###############################################################################
+# 1. Start from a Binder-ready base image that already knows how to run Jupyter
+###############################################################################
+FROM jupyter/r-notebook:lab-4.3.3
 
-# Define HOME as /root (default for root)
-ENV HOME=/root
+###############################################################################
+# 2. Install the extra R packages your notebook needs
+###############################################################################
+USER root                     # root rights are required for system-wide install
+COPY install.R /tmp/install.R
+RUN --mount=type=cache,target=/var/cache/apt \
+    Rscript /tmp/install.R && rm /tmp/install.R
+# └─ install.R only installs packages such as ggplot2 – IRkernel is **already**
+#    present and its spec pre-registered in the base image, so the extra
+#    IRkernel::installspec() line in your file can be deleted. :contentReference[oaicite:0]{index=0}&#8203;:contentReference[oaicite:1]{index=1}
 
-# Install system dependencies:
-# - libgsl-dev: for R packages requiring GSL.
-# - libzmq5: provides libzmq.so.5 for pbdZMQ.
-# - python3 and python3-pip: needed to install Jupyter.
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        libgsl-dev \
-        libzmq5 \
-        python3 \
-        python3-pip && \
-    # Install Jupyter using pip with the --break-system-packages flag.
-    pip3 install --break-system-packages jupyter && \
-    rm -rf /var/lib/apt/lists/*
-
-# Explicitly expose port 8888
-EXPOSE 8888
-
-# Copy your repository into the container's home directory
-COPY . ${HOME}
-
-# Run the install.R script (if it exists) to install R packages.
-# For example, your install.R should contain:
-#   install.packages("IRkernel")
-#   IRkernel::installspec()  # to register the kernel with Jupyter
-#   install.packages("ggplot2")
-RUN if [ -f ${HOME}/install.R ]; then \
-      R --quiet -e 'source("/root/install.R")'; \
-    fi
-
-# Start Jupyter Notebook server with parameters that help Binder connect.
-CMD ["jupyter", "notebook", "--allow-root", "--ip=0.0.0.0", "--port=8888", \
-     "--no-browser", "--NotebookApp.token=''", "--NotebookApp.password=''", \
-     "--NotebookApp.allow_origin='*'", "--NotebookApp.disable_check_xsrf=True"]
+###############################################################################
+# 3. Hand control back to the parent image’s default user & start command
+###############################################################################
+USER ${NB_UID}                
+CMD ["start.sh"]              
+#            ↑ The parent image provides start.sh, which in turn executes the
+#              health-checked jupyterhub-singleuser entry-point Binder needs
