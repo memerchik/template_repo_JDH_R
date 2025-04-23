@@ -1,3 +1,5 @@
-install.packages("IRkernel")
-IRkernel::installspec()
-install.packages("ggplot2")
+install.packages(
+  c(
+    "ggplot2"
+  )
+)

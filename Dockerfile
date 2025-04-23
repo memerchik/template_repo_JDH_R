@@ -5,11 +5,12 @@
 FROM jupyter/r-notebook:x86_64-r-4.3.1
 
 ###############################################################################
-# 2. Install your extra R packages as jovyan (no root needed)
+# 2. Install your extra R packages as jovyan (no root needed), 
+#    with a CRAN mirror set so install.packages() works non-interactively
 ###############################################################################
 COPY install.R /tmp/install.R
-RUN Rscript /tmp/install.R && rm /tmp/install.R
-# install.R need only install your packages (e.g. ggplot2) – IRkernel is pre-registered :contentReference[oaicite:0]{index=0}&#8203;:contentReference[oaicite:1]{index=1}
+RUN Rscript -e "options(repos = c(CRAN='https://cloud.r-project.org')); source('/tmp/install.R')" \
+    && rm /tmp/install.R
 
 ###############################################################################
 # 3. Let the parent image handle launch
