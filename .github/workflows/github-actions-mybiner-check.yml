@@ -1,0 +1,60 @@
+name: "Test Binder build"
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+env:
+  # change this if you want to test against hub.2i2c.mybinder.org instead:
+  BINDERHUB_HOST: https://mybinder.org
+
+jobs:
+  binder-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install HTTP client
+        run: pip install requests
+
+      - name: Poll Binder build
+        run: |
+          python - << 'EOF'
+          import os, time, sys, requests
+
+          repo = os.getenv("GITHUB_REPOSITORY")
+          # use the branch or tag that was pushed; HEAD works for default branch
+          ref  = os.getenv("GITHUB_REF_NAME", "HEAD")
+          base = os.getenv("BINDERHUB_HOST").rstrip("/")
+          url  = f"{base}/build/gh/{repo}/{ref}"
+
+          print("Polling Binder build at:", url)
+          timeout_sec = 10 * 60    # 10 minutes
+          interval    = 15         # poll every 15 s
+          start       = time.time()
+
+          while True:
+              res = requests.get(url)
+              res.raise_for_status()
+              phase = res.json().get("phase", "")
+              print(f"  → phase: {phase}")
+              if phase.lower() == "ready":
+                  print("Binder build succeeded!")
+                  sys.exit(0)
+              if phase.lower() in ("failed", "error", "abort"):
+                  print("Binder build failed; logs at:", res.json().get("build_logs_url"))
+                  sys.exit(1)
+              if time.time() - start > timeout_sec:
+                  print("Timed out waiting for Binder build")
+                  sys.exit(1)
+              time.sleep(interval)
+          EOF
