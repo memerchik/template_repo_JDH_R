@@ -1,23 +1,16 @@
-## Use a tag instead of "latest" for reproducibility
-FROM rocker/binder:3.6.3
 
-## Declares build arguments
-ARG NB_USER
-ARG NB_UID
+FROM jupyter/r-notebook:x86_64-r-4.3.1
 
-## Copies your repo files into the Docker Container
-USER root
-RUN apt-get update && apt-get -y install libgsl-dev
-COPY . ${HOME}
-## Enable this to copy files from the binder subdirectory
-## to the home, overriding any existing files.
-## Useful to create a setup on binder that is different from a
-## clone of your repository
-## COPY binder ${HOME}
-RUN chown -R ${NB_USER} ${HOME}
+WORKDIR /home/jovyan/work
 
-## Become normal user again
-USER ${NB_USER}
+###############################################################################
+# Copying entire repo
+###############################################################################
+COPY . .
+# install.R must live at the repo root; it’ll now be in /home/jovyan/work/install.R
+RUN Rscript -e "options(repos = c(CRAN='https://cloud.r-project.org')); \
+               source('install.R')"
 
-## Run an install.R script, if it exists.
-RUN if [ -f install.R ]; then R --quiet -f install.R; fi
+CMD ["start.sh"]
+
+# example url to start binder: https://mybinder.org/v2/gh/*USERNAME*/*NAME_OF_THE_REPO*/HEAD?filepath=*ARTICLE_NAME*.ipynb
