@@ -2,7 +2,7 @@
 ###############################################################################
 # 1. Start from a Binder-ready base image that already knows how to run Jupyter
 ###############################################################################
-FROM jupyter/r-notebook:r-4.3.3
+FROM jupyter/r-notebook:r-4.3.1
 
 ###############################################################################
 # 2. Install the extra R packages your notebook needs
