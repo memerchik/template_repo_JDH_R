@@ -20,7 +20,7 @@ jobs:
           docker run --rm \
             --entrypoint /bin/bash \
             binder-test \
-            -lc "jupyter nbconvert \
+            -lc "jupyterkdjf nbconvert \
                    --to notebook \
                    --execute /home/jovyan/work/author_guideline_template.ipynb \
                    --ExecutePreprocessor.timeout=600"

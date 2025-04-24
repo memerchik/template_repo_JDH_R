@@ -2,8 +2,11 @@
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/C2DH/template_repo_JDH_R/HEAD?filepath=author_guideline_template.ipynb)
 
-Launch on Binder → [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/memerchik/template_repo_JDH_R/HEAD?urlpath=lab/tree/author_guideline_template.ipynb)  
-CI status → [![Binder test](https://github.com/memerchik/template_repo_JDH_R/actions/workflows/github-actions-bybinder-local-test.yml/badge.svg)](https://github.com/memerchik/template_repo_JDH_R/actions/workflows/github-actions-bybinder-local-test.yml)
+Launch on Binder → [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/memerchik/template_repo_JDH_R/HEAD?urlpath=lab/tree/author_guideline_template.ipynb)
+
+<!-- Change "memerchik" and "template_repo_JDH_R" for your username and project name -->
+
+CI status → [![Binder test](https://github.com/memerchik/template_repo_JDH_R/actions/workflows/github-actions-mybinder-local-test.yml/badge.svg)](https://github.com/memerchik/template_repo_JDH_R/actions/workflows/github-actions-mybinder-local-test.yml)
 
 At the root:
 
