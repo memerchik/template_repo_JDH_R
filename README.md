@@ -2,6 +2,9 @@
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/C2DH/template_repo_JDH_R/HEAD?filepath=author_guideline_template.ipynb)
 
+Launch on Binder → [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/<OWNER>/<REPO>/HEAD?urlpath=lab/tree/author_guideline_template.ipynb)  
+CI status → [![Binder test](https://github.com/<OWNER>/<REPO>/actions/workflows/binder-local-test.yml/badge.svg)](https://github.com/<OWNER>/<REPO>/actions/workflows/binder-local-test.yml)
+
 At the root:
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/C2DH/template_repo_JDH_R.git/HEAD)
