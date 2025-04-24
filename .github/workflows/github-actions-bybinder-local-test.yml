@@ -1,4 +1,4 @@
-name: "Local Binder-style test"
+name: "Local Binder-style test (fixed)"
 
 on:
   push:
@@ -22,15 +22,19 @@ jobs:
 
       - name: Build image with repo2docker
         run: |
-          # build the image but don’t run - name it "binder-test"
+          # Pass NB_UID/NB_USER if you want to suppress the warnings:
           jupyter-repo2docker . \
             --no-run \
+            --build-arg NB_UID=1000 \
+            --build-arg NB_USER=jovyan \
             --image-name binder-test
 
       - name: Execute notebook inside the container
         run: |
-          # Executes author_guideline_template.ipynb; fails if any cell errors
-          docker run --rm binder-test \
+          # Override ENTRYPOINT so we don't get tini trying to exec "--no-run"
+          docker run --rm \
+            --entrypoint "" \
+            binder-test \
             jupyter nbconvert \
               --to notebook \
               --execute author_guideline_template.ipynb \
