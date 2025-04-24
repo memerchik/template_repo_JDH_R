@@ -1,0 +1,37 @@
+name: "Local Binder-style test"
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  binder-local:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install repo2docker
+        run: pip install --upgrade jupyter-repo2docker
+
+      - name: Build image with repo2docker
+        run: |
+          # build the image but don’t run - name it "binder-test"
+          jupyter-repo2docker . \
+            --no-run \
+            --image-name binder-test
+
+      - name: Execute notebook inside the container
+        run: |
+          # Executes author_guideline_template.ipynb; fails if any cell errors
+          docker run --rm binder-test \
+            jupyter nbconvert \
+              --to notebook \
+              --execute author_guideline_template.ipynb \
+              --ExecutePreprocessor.timeout=600

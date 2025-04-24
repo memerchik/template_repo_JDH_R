@@ -2,13 +2,10 @@ name: "Test Binder build"
 
 on:
   push:
-    branches:
-      - main
-      - master
+    branches: [main, master]
   pull_request:
 
 env:
-  # change this if you want to test against hub.2i2c.mybinder.org instead:
   BINDERHUB_HOST: https://mybinder.org
 
 jobs:
@@ -24,7 +21,7 @@ jobs:
           python-version: "3.x"
 
       - name: Install HTTP client
-        run: pip install requests
+        run: pip install --upgrade requests
 
       - name: Poll Binder build
         run: |
@@ -32,29 +29,28 @@ jobs:
           import os, time, sys, requests
 
           repo = os.getenv("GITHUB_REPOSITORY")
-          # use the branch or tag that was pushed; HEAD works for default branch
-          ref  = os.getenv("GITHUB_REF_NAME", "HEAD")
+          # derive branch name: use GITHUB_REF (refs/heads/…) if REF_NAME is unset
+          ref = os.getenv("GITHUB_REF_NAME") or os.getenv("GITHUB_REF", "").split("/")[-1]
           base = os.getenv("BINDERHUB_HOST").rstrip("/")
-          url  = f"{base}/build/gh/{repo}/{ref}"
+          url = f"{base}/build/gh/{repo}/{ref}"
 
           print("Polling Binder build at:", url)
-          timeout_sec = 10 * 60    # 10 minutes
-          interval    = 15         # poll every 15 s
-          start       = time.time()
+          interval = 5               # seconds
+          max_attempts = (30) 
 
-          while True:
+          for i in range(1, max_attempts + 1):
               res = requests.get(url)
               res.raise_for_status()
-              phase = res.json().get("phase", "")
-              print(f"  → phase: {phase}")
-              if phase.lower() == "ready":
-                  print("Binder build succeeded!")
+              phase = res.json().get("phase", "").lower()
+              print(f"[{i}/{max_attempts}] phase = {phase}")
+              if phase == "ready":
+                  print("✅ Binder build succeeded!")
                   sys.exit(0)
-              if phase.lower() in ("failed", "error", "abort"):
-                  print("Binder build failed; logs at:", res.json().get("build_logs_url"))
-                  sys.exit(1)
-              if time.time() - start > timeout_sec:
-                  print("Timed out waiting for Binder build")
+              if phase in ("failed", "error", "abort"):
+                  print("❌ Binder build failed; logs at", res.json().get("build_logs_url"))
                   sys.exit(1)
               time.sleep(interval)
+
+          print("⏰ Timed out waiting for Binder build after 10 minutes")
+          sys.exit(1)
           EOF
