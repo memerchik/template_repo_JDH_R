@@ -11,21 +11,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install repo2docker
-        run: pip install --upgrade jupyter-repo2docker
-
-      - name: Build Binder image (no run)
+      - name: Build image from Dockerfile
         run: |
-          jupyter-repo2docker . --no-run --image-name binder-test
+          docker build -t binder-test .
 
       - name: Execute notebook inside the image
         run: |
-          # 1) --entrypoint="" wipes out tini
-          # 2) the command that follows replaces the stray "--no-run"
           docker run --rm \
-            --entrypoint="" \
+            --entrypoint /bin/bash \
             binder-test \
-            jupyter nbconvert \
-              --to notebook \
-              --execute /home/jovyan/work/author_guideline_template.ipynb \
-              --ExecutePreprocessor.timeout=600
+            -lc "jupyter nbconvert \
+                   --to notebook \
+                   --execute /home/jovyan/work/author_guideline_template.ipynb \
+                   --ExecutePreprocessor.timeout=600"
