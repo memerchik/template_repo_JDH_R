@@ -1,0 +1,30 @@
+# .github/workflows/binder-build.yml
+name: local binder-readiness test
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+jobs:
+  binder-check:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checkout (uses GITHUB_TOKEN under the hood)
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Install Docker & repo2docker
+      - name: Install Docker & repo2docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          pip install --upgrade pip
+          pip install jupyter-repo2docker
+
+      # 3. Build the Binder image (no container run)
+      - name: Build with repo2docker
+        run: |
+          # --no-run: build only, exit non-zero if any step fails
+          jupyter-repo2docker --no-run --debug .
+
