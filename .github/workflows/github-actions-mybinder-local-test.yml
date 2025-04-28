@@ -1,30 +1,27 @@
-name: local binder-style test action
+# name: nbconvert testing
 
 # on:
-#   [workflow_dispatch]
-
-on:
-  push:
-    branches: [main, master]
-  pull_request:
+#   push:
+#     branches: [main, master]
+#   pull_request:
   
 
-jobs:
-  binder-local:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+# jobs:
+#   binder-local:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
 
-      - name: Build image from Dockerfile
-        run: |
-          docker build -t binder-test .
+#       - name: Build image from Dockerfile
+#         run: |
+#           docker build -t binder-test .
 
-      - name: Execute notebook inside the image
-        run: |
-          docker run --rm \
-            --entrypoint /bin/bash \
-            binder-test \
-            -lc "jupyter nbconvert \
-                   --to notebook \
-                   --execute /home/jovyan/work/author_guideline_template.ipynb \
-                   --ExecutePreprocessor.timeout=600"
+#       - name: Execute notebook inside the image
+#         run: |
+#           docker run --rm \
+#             --entrypoint /bin/bash \
+#             binder-test \
+#             -lc "jupyter nbconvert \
+#                    --to notebook \
+#                    --execute /home/jovyan/work/author_guideline_template.ipynb \
+#                    --ExecutePreprocessor.timeout=600"

@@ -1,5 +1,4 @@
-# .github/workflows/binder-build.yml
-name: local binder-readiness test
+name: mybinder deploy test (repo2docker)
 
 on:
   push:
