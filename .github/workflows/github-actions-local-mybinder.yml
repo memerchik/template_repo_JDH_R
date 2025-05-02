@@ -2,7 +2,7 @@ name: mybinder deploy test (repo2docker)
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master ] # add any branch here if you need the action to track it as well
   pull_request:
 
 jobs:
@@ -12,6 +12,8 @@ jobs:
 
       - name: Check out code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
 
       - name: Install repo2docker
         run: |
